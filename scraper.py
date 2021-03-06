@@ -13,3 +13,11 @@ class QuotesSpider(scrapy.Spider):
                 'text': quote.css(TEXT_SELECTOR).extract_first(),
                 'Author': quote.css(AUTHOR_SELECTOR).extract_first(),
             }
+
+        NEXT_PAGE_SELECTOR = '.next a ::attr(href)'
+        next_page = response.css(NEXT_PAGE_SELECTOR).extract_first()
+        if next_page:
+            yield scrapy.Request(
+                response.urljoin(next_page),
+                callback=self.parse
+            )
